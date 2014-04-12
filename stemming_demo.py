@@ -7,8 +7,7 @@ import pyintertextuality as itx
 
 if __name__ == '__main__':
 	print '\n'
-	speech1 = itx.read_source_file('beaches.txt')
-	speech2 = itx.read_source_file('finest_hour.txt')
+	vita_st_germani = itx.read_source_file('germani.txt')
 	"""
 	#descr = 'WORD TOKENIZER'
 	#header = '-' * ((50-len(descr))//2) + ' ' + descr + ' ' + '-' * ((50-len(descr))//2)
