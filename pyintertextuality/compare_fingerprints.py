@@ -1,9 +1,10 @@
-#from algorithms.winnower import winnow
+# yikes - this is awful! Needs major re-work if this is determined
+# to be the correct way to actually use the document fingerprints
 
 def compare_fingerprints(fp1, fp2, threshold = 5):
     fp1_hashes = [f[2] for f in fp1]
     fp2_hashes = [f[2] for f in fp2]
-    match_idxs = []
+    match_results = []
     # burn n-1 chars after a successful hit of n chars
     for i, hs in enumerate(fp1_hashes):
         burnoff = 0
@@ -23,21 +24,8 @@ def compare_fingerprints(fp1, fp2, threshold = 5):
                     #burnoff = lenhit
                     #print 'Burning {} chars'.format(burnoff)
 
-                    match_idxs.append((fp1[i][0][0], fp1[min(i+lenhit, len(fp1)-1)][0][-1], 
+                    match_results.append((fp1[i][0][0], fp1[min(i+lenhit, len(fp1)-1)][0][-1], 
                                       fp2[j][0][0], fp2[min(j+lenhit, len(fp2)-1)][0][-1]))
         else:
             burnoff -= 1
-    return match_idxs
-"""
-if __name__ == '__main__':
-    with open('beaches.txt', 'rU') as inf:
-        text1 = inf.read()
-    with open('finest_hour.txt', 'rU') as inf:
-        text2 = inf.read()
-    fp1 = winnow(text1)
-    fp2 = winnow(text2)
-    
-    cmpare = compare_fingerprints(fp1, fp2, threshold=6)
-    print len(cmpare)
-    #for (t1st, t1end, t2st, t2end) in compare_fingerprints(fp1, fp2, threshold=6):
-    #    print '{} | {}'.format(text1[t1st:t1end+1], text2[t2st:t2end+1])"""
+    return match_results

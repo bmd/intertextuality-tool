@@ -1,14 +1,28 @@
-"""
-Schinke R, Greengrass M, Robertson AM and Willett P (1996) A stemming algorithm for Latin text databases. Journal of Documentation, 52: 172-187.
-"""
+
 class SchinkeStemmer:
-    def __init__(self, text):
+    """
+    Implements the stemming algorithm for latin texts first described in 
+    Schinke et al. 1996 and further outlined by Martin Porter in his snowball
+    documentation website.
+
+    References
+    -----------
+    Porter, M. "The Schinke Latin stemming algorithm":
+        http://snowball.tartarus.org/otherapps/schinke/intro.html
+
+    Schinke R, Greengrass M, Robertson AM and Willett P (1996) A stemming 
+        algorithm for Latin text databases. Journal of Documentation, 
+        52: 172-187.
+    """
+
+    def __init__(self, text, min_token_size=4):
         self.src = text
-        self.QUE_PRESERVE = ['atque', 'quoque', 'neque', 'itaque', 'absque', 'apsque', 
-            'abusque', 'adaeque', 'adusque', 'denique', 'deque', 'susque', 
-            'oblique', 'peraeque', 'plenisque', 'quandoque', 'quisque', 
-            'quaeque', 'cuiusque', 'cuique', 'quemque', 'quamque', 'quaque', 
-            'quique', 'quorumque', 'quarumque', 'quibusque', 'quosque', 
+        self.min = min_token_size
+        self.QUE_PRESERVE = ['atque', 'quoque', 'neque', 'itaque', 'absque', 
+            'apsque', 'abusque', 'adaeque', 'adusque', 'denique', 'deque', 
+            'susque', 'oblique', 'peraeque', 'plenisque', 'quandoque', 
+            'quisque', 'quaeque', 'cuiusque', 'cuique', 'quemque', 'quamque', 
+            'quaque', 'quique', 'quorumque', 'quarumque', 'quibusque', 'quosque', 
             'quasque', 'quotusquisque', 'quousque', 'ubique', 'undique', 
             'usque', 'uterque', 'utique', 'utroque', 'utribique', 'torque', 
             'coque', 'concoque', 'contorque', 'detorque', 'decoque', 'excoque', 
@@ -16,92 +30,92 @@ class SchinkeStemmer:
             'attorque', 'incoque', 'intorque', 'praetorque']
 
     def _longer(self, n, v):
-        if len(v) > len(n):
-            return v
-        else:
-            return n
+        """
+        Return the longer of two strings.
+        """
+        return v if len(v) > len(n) else n
 
-    def _remove_noun_suffix(self, tk):
-        NOUN_SUFFIXES = ['ibus', 'ius', 'ae', 'am', 'as', 'em', 'es', 'ia',
-        'is', 'nt', 'os', 'ud', 'um', 'us', 'a', 'e', 'i', 'o', 'u']
+    def _remove_noun_suffix(self, token):
+        """
+        Strip common noun suffixes from a token.
+        """
+        n_suffixes = ['ibus', 'ius', 'ae', 'am', 'as', 'em', 'es', 'ia',
+                'is', 'nt', 'os', 'ud', 'um', 'us', 'a', 'e', 'i', 'o', 'u']
 
-        for suff in NOUN_SUFFIXES:
-            if tk.endswith(suff):
-                # don't use replace unless you implement rreplace
-                return tk[:-len(suff)]
+        for suff in n_suffixes:
+            if token.endswith(suff):
+                return token[:-len(suff)]
         else:
-            return tk
+            return token
    
     def _noun_stem(self, token):
+        """
+        Return the candidate word stem for token, treating token as if it 
+        were a noun.
+        """
         ntoken = token[:]
         original = token[:]
 
-        # return if either too short, or a protected word
-        if (len(ntoken) <= 4 or 
-            ntoken.lower() in self.QUE_PRESERVE):
+        if len(ntoken) <= self.min or ntoken.lower() in self.QUE_PRESERVE:
             return ntoken
 
-        # strip que
-        if len(ntoken) > 3 and ntoken[-4:] == 'que':
-            ntoken = ntoken.replace('que','')
+        elif len(ntoken) > self.min and ntoken.endswith('que'):
+            ntoken = ntoken[:-3]
 
         ntoken = self._remove_noun_suffix(ntoken)
 
-        if len(ntoken) >= 2:
-            return ntoken
-        else:
-            return original
+        return ntoken if len(ntoken) >= 2 else original
 
-    def _remove_verb_suffix(self, tk):
-        VERB_SUFFIXES = ['iuntur', 'beris', 'erunt', 'untur', 'iunt', 'mini', 
+    def _remove_verb_suffix(self, token):
+        """
+        Strip common verb suffixes from a token, replacing specific suffixes 
+        where applicable.
+        """
+        v_suffixes = ['iuntur', 'beris', 'erunt', 'untur', 'iunt', 'mini', 
         'ntur', 'stis', 'bor', 'ero', 'mur', 'mus', 'ris', 'sti', 'tis', 'tur',
         'unt',  'bo', 'ns', 'nt', 'ri', 'm', 'r', 's', 't']
 
         i_replace = ['iuntur','erunt','untur','iunt','unt']
         bi_replace = ['beris','bor','bo']
 
-        for suff in VERB_SUFFIXES:
-            if tk.endswith(suff):
+        for suff in v_suffixes:
+            if token.endswith(suff):
                 if suff in i_replace:
-                    return tk[:-len(suff)] + 'i'
+                    return token[:-len(suff)] + 'i'
                 elif suff in bi_replace:
-                    return tk[:-len(suff)] + 'bi'
+                    return token[:-len(suff)] + 'bi'
                 elif suff == 'ero':
-                    return tk[:-len(suff)] + 'eri'
+                    return token[:-len(suff)] + 'eri'
                 else:
-                    return tk[:-len(suff)]
+                    return token[:-len(suff)]
         else:
-            return tk
+            return token
 
     def _verb_stem(self, token):
-
+        """
+        Return a candidate word stem for token, treating token as if it
+        were a verb.
+        """
         vtoken = token[:]
         original = vtoken[:]
 
-        # return if either too short, or a protected word
-        if (len(original) <= 4 or 
-            original.lower() in self.QUE_PRESERVE):
+        if len(original) <= self.min or original.lower() in self.QUE_PRESERVE:
             return vtoken
 
-        # stripi que
-        if len(vtoken) > 3 and vtoken.endswith('que'):
-            vtoken = vtoken.replace('que','')
+        elif len(vtoken) > self.min and vtoken.endswith('que'):
+            vtoken = vtoken[:-3]
 
-        # handle verb suffixes 
         vtoken = self._remove_verb_suffix(vtoken)
 
-        # now return it
-        if len(vtoken) >= 2:
-            return vtoken
-        else:
-            return original
+        return vtoken if len(vtoken) >= 2 else original
 
     def stem(self):
-        """Convert all occurrences of the letters 'j' or 'v' 
-        # to 'i' or 'u', respectively."""
+        """
+        Create candidate stems for all words
+        """
         stemmed = [token.replace('j','i').replace('v','u') for token in self.src]
 
         for idx, word in enumerate(stemmed):
-            #stemmed[idx] = self._longer(self._noun_stem(word), self._verb_stem(word))
             stemmed[idx] = self._longer(self._noun_stem(word), self._verb_stem(word))
+
         return stemmed
