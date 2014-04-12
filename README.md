@@ -1,4 +1,4 @@
-intertextuality-tool
+DARMC Intertextuality Analysis Library
 ====================
 
 DEMO:
