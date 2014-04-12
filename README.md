@@ -21,12 +21,24 @@ compare_result = itx.compare_fingerprints(winnow1, winnow2, threshold=8)
 prints the following output with brackets denoting the core of the match:
 
 ```
-nation. T[he British Empire and] the Frenc
-tion and t[he British Empire and tha]t, once we
+-----------------------------
+FINGERPRINTING ALGORITHM DEMO
+-----------------------------
+Importing Text 1: "We will fight on the beaches" - Winston Churchill (June 6, 1940)
+Importing Text 2: "This was their finest hour" - Winston Churchill (June 18, 1940)
+Winnowing texts... DONE
+Searching for similarities between texts... DONE
 
-nation. T[he British Empire and the F]rench Repu
-cracies, t[he British Empire and the] United St
+-------
+RESULTS
+-------
+(1)  nation. T[he British Empire and] the Frenc
+    tion and t[he British Empire and tha]t, once we
 
-tion. The [British Empire and the F]rench Repu
-cies, the [British Empire and the] United St
+(2)  nation. T[he British Empire and the F]rench Repu
+    cracies, t[he British Empire and the] United St
+
+(3) tion. The [British Empire and the F]rench Repu
+    cies, the [British Empire and the] United St
+
 ```
