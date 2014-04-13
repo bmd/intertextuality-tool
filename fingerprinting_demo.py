@@ -8,10 +8,10 @@ if __name__ == '__main__':
     print 'FINGERPRINTING ALGORITHM DEMO'
     print '-----------------------------'
     print 'Importing Text 1: "We will fight on the beaches" - Winston Churchill (June 6, 1940)'
-    speech1 = itx.read_source_file('beaches.txt')
+    speech1 = itx.read_source_file('pltest1.txt')
 
     print 'Importing Text 2: "This was their finest hour" - Winston Churchill (June 18, 1940)'
-    speech2 = itx.read_source_file('finest_hour.txt')
+    speech2 = itx.read_source_file('pltest2.txt')
 
     print 'Winnowing texts...',
     winnow1 = itx.algorithms.winnow(speech1)

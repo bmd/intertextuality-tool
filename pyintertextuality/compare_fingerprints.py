@@ -6,8 +6,8 @@ def compare_fingerprints(fp1, fp2, threshold = 5):
     fp2_hashes = [f[2] for f in fp2]
     match_results = []
     # burn n-1 chars after a successful hit of n chars
+    burnoff = 0
     for i, hs in enumerate(fp1_hashes):
-        burnoff = 0
         if burnoff == 0:
             for j, hs2 in enumerate(fp2_hashes):
                 if fp2_hashes[j:j+threshold] == fp1_hashes[i:i+threshold]:
@@ -20,9 +20,9 @@ def compare_fingerprints(fp1, fp2, threshold = 5):
                         else:
                             still_matching = False
 
-                    lenhit = threshold + addtl_chars - 1
+                    lenhit = threshold + addtl_chars
                     burnoff = lenhit
-                    #print 'Burning {} chars'.format(burnoff)
+                    print 'Burning {} chars'.format(burnoff)
 
                     match_results.append((fp1[i][0][0], fp1[min(i+lenhit, len(fp1)-1)][0][-1], 
                                       fp2[j][0][0], fp2[min(j+lenhit, len(fp2)-1)][0][-1]))
