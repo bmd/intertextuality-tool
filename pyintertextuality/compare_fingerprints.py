@@ -21,11 +21,25 @@ def compare_fingerprints(fp1, fp2, threshold = 5):
                             still_matching = False
 
                     lenhit = threshold + addtl_chars - 1
-                    #burnoff = lenhit
+                    burnoff = lenhit
                     #print 'Burning {} chars'.format(burnoff)
 
                     match_results.append((fp1[i][0][0], fp1[min(i+lenhit, len(fp1)-1)][0][-1], 
                                       fp2[j][0][0], fp2[min(j+lenhit, len(fp2)-1)][0][-1]))
         else:
             burnoff -= 1
+
+    # strip matches that are too close
+    for i, result in enumerate(match_results):
+        if i == 0:
+            continue
+        elif ((match_results[i][0] - 5 > match_results[i-1][0] or
+                match_results[i][0] + 5 > match_results[i-1][0]) and
+                (match_results[i][2] - 5 > match_results[i-1][2] or
+                match_results[i][2] + 5 > match_results[i-1][2])):
+            match_results.pop(i)
+        else:
+            pass
+
+
     return match_results
