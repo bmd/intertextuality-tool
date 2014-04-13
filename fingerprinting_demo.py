@@ -26,10 +26,10 @@ if __name__ == '__main__':
     print '-------'
     for idx, (t1st, t1end, t2st, t2end) in enumerate(compare_result):
         print '({}) {}[{}]{}\n    {}[{}]{}\n'.format(idx+1,
-                                           speech1[t1st-50:t1st], 
+                                           speech1[t1st-25:t1st], 
                                            speech1[t1st:t1end+1], 
-                                           speech1[t1end+1:t1end+51],
-                                           speech2[t2st-50:t2st],
+                                           speech1[t1end+1:t1end+26],
+                                           speech2[t2st-25:t2st],
                                            speech2[t2st:t2end+1],
-                                           speech2[t2end+1:t2end+51]
+                                           speech2[t2end+1:t2end+26]
                                            )
