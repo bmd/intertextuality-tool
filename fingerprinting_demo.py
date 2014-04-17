@@ -7,19 +7,19 @@ if __name__ == '__main__':
     print '-----------------------------'
     print 'FINGERPRINTING ALGORITHM DEMO'
     print '-----------------------------'
-    print 'Importing Text 1: "We will fight on the beaches" - Winston Churchill (June 6, 1940)'
-    speech1 = itx.read_source_file('beaches.txt')
+    print 'Importing Text 1: "S. Praeiecti"'
+    speech1 = itx.read_source_file('S. Praeiecti Text.txt').replace('\n','')
 
-    print 'Importing Text 2: "This was their finest hour" - Winston Churchill (June 18, 1940)'
-    speech2 = itx.read_source_file('finest_hour.txt')
+    print 'Importing Text 2: "Vita Columbani"'
+    speech2 = itx.read_source_file('V. Columbani Text.txt').replace('\n','')
 
     print 'Winnowing texts...',
-    winnow1 = itx.algorithms.winnow(speech1)
-    winnow2 = itx.algorithms.winnow(speech2)
+    winnow1 = itx.algorithms.winnow(speech1, k=8, w=4)
+    winnow2 = itx.algorithms.winnow(speech2, k=8, w=4)
     print 'DONE'
 
     print 'Searching for similarities between texts...'
-    compare_result = itx.compare_fingerprints(winnow1, winnow2, threshold=7)
+    compare_result = itx.compare_fingerprints(winnow1, winnow2, threshold=10)
 
     print '\n-------'
     print 'RESULTS'

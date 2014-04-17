@@ -6,23 +6,10 @@ import os, sys
 import pyintertextuality as itx
 
 if __name__ == '__main__':
-	print '\n'
 	vita_st_germani = itx.read_source_file('germani.txt')
-	"""
-	#descr = 'WORD TOKENIZER'
-	#header = '-' * ((50-len(descr))//2) + ' ' + descr + ' ' + '-' * ((50-len(descr))//2)
-	#print header
-	wt = itx.WordTokenizer()
-
-	#descr = 'SENTENCE TOKENIZER'
-	#header = '-' * ((50-len(descr))//2) + ' ' + descr + ' ' + '-' * ((50-len(descr))//2)
-	#print header
 	st = itx.SentenceTokenizer()
-
-	#descr = 'COMBINED TOKENIZER'
-	#header = '-' * ((50-len(descr))//2) + ' ' + descr + ' ' + '-' * ((50-len(descr))//2)
-	#print header
-	all_tokens = [wt.make_word_tokens(sent) for sent in st.make_sentence_tokens(vita)]
+	wt = itx.WordTokenizer()
+	all_tokens = [wt.make_word_tokens(sent) for sent in st.make_sentence_tokens(vita_st_germani)]
 	correct_tokens = [item for sublist in all_tokens for item in sublist]
 
 	descr = 'SCHINKE STEMMER'
@@ -35,7 +22,6 @@ if __name__ == '__main__':
 	print 'Lexical Richness: {:.3f}'.format(d.lexical_richness())
 
 	print '\n'
-	
 	descr = 'NAIVE STEMMER'
 	header = '-' * ((50-len(descr))//2) + ' ' + descr + ' ' + '-' * ((50-len(descr))//2)
 	print header
@@ -44,15 +30,5 @@ if __name__ == '__main__':
 	d2 = itx.TextDescriptor(other_stems)
 	print 'Got {} unique stems'.format(len(set(other_stems)))
 	print 'Lexical Richness: {:.3f}'.format(d2.lexical_richness())
-
-
 	print '\n'
-	#descr = 'DESCRIPTOR'
-	#header = '-' * ((50-len(descr))//2) + ' ' + descr + ' ' + '-' * ((50-len(descr))//2)
-	#print header
-	#d = itx.TextDescriptor(correct_tokens)
-	#print 'Lexical Richness: {}'.format(d.lexical_richness())
-	#print d.frequencies()
-	#print d.hapaxes()"""
-	"""
 	

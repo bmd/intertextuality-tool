@@ -9,8 +9,9 @@ def sanitize(text):
     """
     tuples = zip(xrange(len(text)), text)
     exp = re.compile(r'[^a-zA-Z0-9]')
-
+    
     return [(t[0], t[1].lower()) for t in tuples if exp.match(t[1]) == None]
+
 
 def kgram_gen(sanitized_text, k=5):
     """

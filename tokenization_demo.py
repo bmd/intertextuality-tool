@@ -6,7 +6,7 @@ import os, sys
 import pyintertextuality as itx
 
 if __name__ == '__main__':
-	vita_st_germani_excerpt = itx.read_source_file('germani.txt')[0:250]
+	vita_st_germani_excerpt = itx.read_source_file('germani.txt')[0:1000]
 
 	print '--------------'
 	print 'TOKENIZER DEMO'
