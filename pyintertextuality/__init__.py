@@ -1,6 +1,5 @@
-from descriptor import *
-from tokenizers import *
-from utils import *
+import algorithms
 from stemmers import NaiveStemmer, SchinkeStemmer
-from algorithms import *
-from compare_fingerprints import *
+from descriptor import TextDescriptor
+from utils import read_source_file
+from compare_fingerprints import compare_fingerprints

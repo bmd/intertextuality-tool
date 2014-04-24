@@ -1,12 +1,17 @@
 import re
 
-words = ['in', 'on', 'I','to','forever']
-exp = re.compile(r'(^|\b)([a-zA-Z]{1,3})(\b|$)')
+regex_lit = r'(^|\b)([a-zA-Z]{1,3})(\b|$)'
+exp = re.compile(regex_lit)
 
-for word in words:
-	print word, re.match(exp, word)
-
-text = "A cat jumped on the wall the the left of me"
+text = "A cat jumped on the wall to the left of me"
 
 overspaced = re.sub(exp, "", text)
-print re.sub(re.compile(r'\s+')," ", overspaced).strip()
+overspaced = re.sub(re.compile(r'\s+')," ", overspaced).strip()
+
+print '\n------------------'
+print 'REGEX TESTING DEMO'
+print '------------------'
+
+print 'Original     : {}'.format(text)
+print 'Compiled with: {}'.format(regex_lit)
+print 'Final version: {}\n'.format(overspaced)
