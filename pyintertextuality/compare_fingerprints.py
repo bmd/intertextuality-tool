@@ -1,9 +1,9 @@
 import pyprind
-import numpy as np
-import pyximport; pyximport.install()
-import cython_fingerprints
+#import pyximport; pyximport.install()
 
-def do_matching(fp1_hashes, fp2_hashes, threshold):
+USE_CYTHON = False
+
+def do_matching(fp1, fp2, fp1_hashes, fp2_hashes, threshold):
     match_results = []
     # burn n-1 chars after a successful hit of n chars
     burnoff = 0
@@ -35,6 +35,6 @@ def do_matching(fp1_hashes, fp2_hashes, threshold):
 def compare_fingerprints(fp1, fp2, threshold = 5):
     fp1_hashes = [f[2] for f in fp1]
     fp2_hashes = [f[2] for f in fp2]
-    match_results = cython_fingerprints.do_matching(fp1, fp2, fp1_hashes, fp2_hashes, threshold)
+    match_results = do_matching(fp1, fp2, fp1_hashes, fp2_hashes, threshold)
 
     return match_results

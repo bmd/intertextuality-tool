@@ -1,4 +1,5 @@
-import os, sys
+import os
+import sys
 
 def read_source_file(infile):
     if not os.path.isfile(infile):
