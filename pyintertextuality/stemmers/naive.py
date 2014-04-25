@@ -34,5 +34,4 @@ class NaiveStemmer:
         A list containing one possibly-stemmed token for each token in
         the input tokens.
         """
-        return [token[:-self.strip] if len(token) >= self.strip + self.offset 
-                                else token for token in self.tokens]
+        return [token[:-self.strip] if len(token) >= self.strip + self.offset else token for token in self.tokens]

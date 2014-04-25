@@ -1,13 +1,11 @@
 import pyprind
-#import pyximport; pyximport.install()
-
-USE_CYTHON = False
+import sys
 
 def do_matching(fp1, fp2, fp1_hashes, fp2_hashes, threshold):
     match_results = []
     # burn n-1 chars after a successful hit of n chars
+    prbar = pyprind.ProgBar(len(fp1_hashes), stream=sys.stdout)
     burnoff = 0
-    prbar = pyprind.ProgBar(len(fp1_hashes))
     len2 = len(fp2_hashes)
     for i in xrange(len(fp1_hashes)):
         if burnoff == 0:
@@ -23,18 +21,28 @@ def do_matching(fp1, fp2, fp1_hashes, fp2_hashes, threshold):
 
                     lenhit = threshold + addtl_chars
                     burnoff = lenhit
+
                     match_results.append((fp1[i][0][0], fp1[min(i+lenhit, len(fp1)-1)][0][-1], 
                                       fp2[j][0][0], fp2[min(j+lenhit, len(fp2)-1)][0][-1]))
+        
         else:
             burnoff -= 1
         prbar.update()
-
     return match_results
 
 
-def compare_fingerprints(fp1, fp2, threshold = 5):
+def compare_fingerprints(fp1, fp2, threshold = 5, CYTHON=False):
     fp1_hashes = [f[2] for f in fp1]
     fp2_hashes = [f[2] for f in fp2]
-    match_results = do_matching(fp1, fp2, fp1_hashes, fp2_hashes, threshold)
+    if CYTHON:
+        try:
+            import pyximport; pyximport.install()
+            from cython_fingerprints import cython_match
+        except ImportError:
+            sys.exit('Cython does not appear to be properly configured on your system. Try comparing fingerprints with CYTHON=False')        
+        
+        match_results = cython_match(fp1, fp2, fp1_hashes, fp2_hashes, threshold)
+    else:
+        match_results = do_matching(fp1, fp2, fp1_hashes, fp2_hashes, threshold)
 
     return match_results

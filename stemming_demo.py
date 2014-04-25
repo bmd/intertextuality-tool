@@ -1,6 +1,7 @@
 # stdlib imports
 from __future__ import division
 import os, sys
+from time import time()
 
 # custom imports - all nltk imports behind the curtain
 import pyintertextuality as itx
@@ -15,11 +16,14 @@ if __name__ == '__main__':
 	descr = 'SCHINKE STEMMER'
 	header = '-' * ((50-len(descr))//2) + ' ' + descr + ' ' + '-' * ((50-len(descr))//2)
 	print header
+	start = time()
 	stemmer = itx.SchinkeStemmer(correct_tokens)
 	stems = stemmer.stem()
+	total_time = time() - start
 	d = itx.TextDescriptor(stems)
 	print 'Got {} unique stems'.format(len(set(stems)))
 	print 'Lexical Richness: {:.3f}'.format(d.lexical_richness())
+	print 'Test ran in {:.3f} seconds'.format(total_time)
 
 	print '\n'
 	descr = 'NAIVE STEMMER'

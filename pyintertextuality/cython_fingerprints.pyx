@@ -1,4 +1,4 @@
-def do_matching(fp1, fp2, fp1_hashes, fp2_hashes, int threshold):
+def cython_match(fp1, fp2, fp1_hashes, fp2_hashes, int threshold):
     match_results = []
     # burn n-1 chars after a successful hit of n chars
     cdef int burnoff = 0
