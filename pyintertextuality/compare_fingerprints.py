@@ -3,10 +3,12 @@ import sys
 
 def do_matching(fp1, fp2, fp1_hashes, fp2_hashes, threshold):
     match_results = []
+
     # burn n-1 chars after a successful hit of n chars
     prbar = pyprind.ProgBar(len(fp1_hashes), stream=sys.stdout)
     burnoff = 0
     len2 = len(fp2_hashes)
+
     for i in xrange(len(fp1_hashes)):
         if burnoff == 0:
             for j in xrange(len2):
@@ -28,12 +30,36 @@ def do_matching(fp1, fp2, fp1_hashes, fp2_hashes, threshold):
         else:
             burnoff -= 1
         prbar.update()
+
     return match_results
+
+def remove_unmatched_hash_values(fp1, fp2):
+    print len(fp2)
+    fp1_hashes = [f[2] for f in fp1]
+    fp2_hashes = [f[2] for f in fp2]
+
+    for idx, item in enumerate(fp2):
+        if item[2] not in fp1_hashes:
+            fp2.pop(idx)
+
+    print len(fp2)
+
+    print len(fp1)
+    for idx, item in enumerate(fp1):
+        if item[2] not in fp2_hashes:
+            fp1.pop(idx)
+
+    print len(fp1)
+    return fp1, fp2
 
 
 def compare_fingerprints(fp1, fp2, threshold = 5, CYTHON=False):
+    fp1, fp2 = remove_unmatched_hash_values(fp1, fp2)
+    #fp1, fp2 = strip_unmatched_hashes(fp2, fp1)
+
     fp1_hashes = [f[2] for f in fp1]
     fp2_hashes = [f[2] for f in fp2]
+
     if CYTHON:
         try:
             import pyximport; pyximport.install()
