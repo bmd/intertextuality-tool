@@ -8,8 +8,6 @@ def cython_match(fp1, fp2, fp1_hashes, fp2_hashes, int threshold):
     cdef int burnoff = 0
     cdef int len1 = len(fp1_hashes)
     cdef int len2 = len(fp2_hashes)
-    cdef int addtl_chars = 0
-    cdef int lenhit = 0
     for i in xrange(len1):
         if burnoff == 0:
             for j in xrange(len2):
