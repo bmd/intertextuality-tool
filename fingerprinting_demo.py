@@ -19,7 +19,7 @@ if __name__ == '__main__':
     print 'DONE'
 
     print 'Searching for similarities between texts...'
-    compare_result = itx.compare_fingerprints(winnow1, winnow2, threshold=10, CYTHON=True)
+    compare_result = itx.compare_fingerprints(winnow1, winnow2, threshold=10, optimize=True, CYTHON=True)
 
     print '\n-------'
     print 'RESULTS'

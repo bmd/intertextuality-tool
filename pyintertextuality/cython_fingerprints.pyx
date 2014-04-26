@@ -9,19 +9,20 @@ def cython_match(fp1, fp2, fp1_hashes, fp2_hashes, int threshold):
     cdef int len1 = len(fp1_hashes)
     cdef int len2 = len(fp2_hashes)
     cdef int addtl_chars = 0
+    cdef int lenhit = 0
     for i in xrange(len1):
         if burnoff == 0:
             for j in xrange(len2):
                 if fp2_hashes[j:j+threshold] == fp1_hashes[i:i+threshold]:
                     still_matching = True
-                    cdef int addtl_chars = 1
+                    addtl_chars = 1
                     while still_matching:
                         if fp2_hashes[j:j+threshold+addtl_chars] == fp1_hashes[i:i+threshold+addtl_chars]:
                             addtl_chars += 1
                         else:
                             still_matching = False
 
-                    cdef int lenhit = threshold + addtl_chars
+                    lenhit = threshold + addtl_chars
                     burnoff = lenhit
                     match_results.append((fp1[i][0][0], fp1[min(i+lenhit, len(fp1)-1)][0][-1], 
                                       fp2[j][0][0], fp2[min(j+lenhit, len(fp2)-1)][0][-1]))

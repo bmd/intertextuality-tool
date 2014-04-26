@@ -1,3 +1,4 @@
+from __future__ import division
 import pyprind
 import sys
 
@@ -34,39 +35,42 @@ def do_matching(fp1, fp2, fp1_hashes, fp2_hashes, threshold):
     return match_results
 
 def remove_unmatched_hash_values(fp1, fp2):
-    print len(fp2)
-    fp1_hashes = [f[2] for f in fp1]
-    fp2_hashes = [f[2] for f in fp2]
+    print 'OPTIMIZATION:\n  Removing kgram hashes not shared between both texts...'
 
+    fp2_hashes = [f[2] for f in fp2]
+    fp1_start_len = len(fp1)
+    for idx, item in enumerate(fp1):
+        if item[2] not in fp2_hashes:
+            fp1.pop(idx)
+    removed = (fp1_start_len - len(fp1)) / fp1_start_len
+    print '  Reduced text 1 from {} fingerprint values to {} ({:.2%})'.format(fp1_start_len, len(fp1), removed)
+
+    fp1_hashes = [f[2] for f in fp1]
+    fp2_start_len = len(fp2)
     for idx, item in enumerate(fp2):
         if item[2] not in fp1_hashes:
             fp2.pop(idx)
 
-    print len(fp2)
+    removed = (fp2_start_len - len(fp2)) / fp2_start_len
+    print '  Reduced text 2 from {} fingerprint values to {} ({:.2%})'.format(fp2_start_len, len(fp2), removed)
 
-    print len(fp1)
-    for idx, item in enumerate(fp1):
-        if item[2] not in fp2_hashes:
-            fp1.pop(idx)
-
-    print len(fp1)
-    return fp1, fp2
+    return fp1, fp2, fp1_hashes, fp2_hashes
 
 
-def compare_fingerprints(fp1, fp2, threshold = 5, CYTHON=False):
-    fp1, fp2 = remove_unmatched_hash_values(fp1, fp2)
-    #fp1, fp2 = strip_unmatched_hashes(fp2, fp1)
-
-    fp1_hashes = [f[2] for f in fp1]
-    fp2_hashes = [f[2] for f in fp2]
+def compare_fingerprints(fp1, fp2, threshold = 5, optimize=False, CYTHON=True):
+    if optimize:
+        fp1, fp2, fp1_hashes, fp2_hashes = remove_unmatched_hash_values(fp1, fp2)
+    else:
+        fp1_hashes = [f[2] for f in fp1]
+        fp2_hashes = [f[2] for f in fp2]
 
     if CYTHON:
         try:
             import pyximport; pyximport.install()
             from cython_fingerprints import cython_match
         except ImportError:
-            sys.exit('Cython does not appear to be properly configured on your system. Try comparing fingerprints with CYTHON=False')        
-        
+            sys.exit('Cython does not appear to be properly configured on your system. Try comparing fingerprints using CYTHON=False')        
+        print 'Using Cython version'
         match_results = cython_match(fp1, fp2, fp1_hashes, fp2_hashes, threshold)
     else:
         match_results = do_matching(fp1, fp2, fp1_hashes, fp2_hashes, threshold)
