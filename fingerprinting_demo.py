@@ -3,6 +3,7 @@ from __future__ import division
 import os, sys
 import pyintertextuality as itx
 import multiprocessing
+import glob
 
 def compare_texts(winnow1, winnow2, threshold=10, optimize=True, CYTHON=True):
     compare_result = itx.compare_fingerprints(winnow1, winnow2, threshold=10, optimize=True, CYTHON=True)
@@ -39,7 +40,16 @@ if __name__ == '__main__':
     winnow3 = itx.algorithms.winnow(speech3, k=8, w=4)
     print 'DONE'
 
-    p = multiprocessing.Process(target=compare_texts, args=(winnow1, winnow2))
-    q = multiprocessing.Process(target=compare_texts, args=(winnow1, winnow3)) 
+    print 'Running Comparisons'
+    p = multiprocessing.Process(
+        target=compare_texts, 
+        args=(winnow1, winnow2)
+        )
+    q = multiprocessing.Process(
+        target=compare_texts, 
+        args=(winnow1, winnow3)
+        )
+
     p.start()
     q.start()
+
