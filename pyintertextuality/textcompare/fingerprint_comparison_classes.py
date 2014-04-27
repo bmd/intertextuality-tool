@@ -57,7 +57,7 @@ class FingerprintMatcher:
         fp1 and fp2, identified by their start and end position in the two 
         original comparison texts.
         """
-        print 'Threshold is {}'.format(self.threshold)
+        #print 'Threshold is {}'.format(self.threshold)
         ngram_hash_dict_1 = self._assemble_hash_dict(self.fp1)
         ngram_hash_dict_2 = self._assemble_hash_dict(self.fp2)
 
@@ -79,5 +79,5 @@ class FingerprintMatcher:
                 prbar.update()
 
 
-        print 'Total matching time: {:.3f}s'.format(time()- start_time)
+        #print 'Total matching time: {:.3f}s'.format(time()- start_time)
         return results_list
