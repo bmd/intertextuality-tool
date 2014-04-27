@@ -2,6 +2,7 @@ from __future__ import division
 import pyprind
 import sys
 import hashlib
+from time import time
 from collections import OrderedDict
 
 def _assemble_hash_dict(fp, threshold):
@@ -98,8 +99,12 @@ def compare_fingerprints(fp1, fp2, threshold = 5, optimize=False, CYTHON=False):
     
     #fp1_hashes = [f[2] for f in fp1]
     #fp2_hashes = [f[2] for f in fp2]
+    start = time()
 
-    return fast_matching(fp1, fp2, threshold)
+    result = fast_matching(fp1, fp2, threshold)
+    print 'Matched in {:.5f} seconds'.format(time()-start)
+
+    return result
     #if CYTHON:
     #    try:
     #        import pyximport; pyximport.install()
