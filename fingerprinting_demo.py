@@ -6,15 +6,20 @@ import multiprocessing
 import glob
 from fuzzywuzzy import fuzz
 
-def strip_duplicates(result_pairs, str_threshold = 80):
+def strip_duplicates(result_pairs, str_threshold = 90):
     ok_matches = []
     fuzz.ratio("this is a test", "this is a test!")
+    prev_cycle = None
     for idx, (t1st, t1end, t2st, t2end) in enumerate(result_pairs):
         if idx == 0:
             ok_matches.append(((t1st, t1end, t2st, t2end)))
-        elif (fuzz.ratio(speech1[t1st:t1end+1], speech1[ok_matches[-1][0]:ok_matches[-1][1]+1]) < str_threshold) and \
-                (fuzz.ratio(speech2[t2st:t2end+1], speech1[ok_matches[-1][2]:ok_matches[-1][3]+1]) < str_threshold):
+            prev_cycle = (t1st, t1end, t2st, t2end)
+        elif (fuzz.ratio(speech1[t1st:t1end+1], speech1[prev_cycle[0]:prev_cycle[1]+1]) < str_threshold) and \
+                (fuzz.ratio(speech2[t2st:t2end+1], speech1[prev_cycle[2]:prev_cycle[3]+1]) < str_threshold):
                 ok_matches.append((t1st, t1end, t2st, t2end))
+                prev_cycle = (t1st, t1end, t2st, t2end)
+        else:
+            prev_cycle = (t1st, t1end, t2st, t2end)
 
     return ok_matches
 
