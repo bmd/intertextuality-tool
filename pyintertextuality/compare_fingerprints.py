@@ -1,6 +1,40 @@
 from __future__ import division
 import pyprind
 import sys
+import hashlib
+from collections import OrderedDict
+
+def _assemble_hash_dict(fp, threshold):
+    hash_dict = OrderedDict()
+    #print text[1]
+    for x in range(len(fp)-threshold):
+        chars = ''.join([str(v[2]) for v in fp[x:x+threshold]])
+        hs = hashlib.sha1(chars.encode('utf-8'))
+        hs = hs.hexdigest()
+        candidate_val = int(hs, 16)
+        #print candidate_val
+        if candidate_val not in hash_dict:
+            hash_dict[candidate_val] = [(fp[x][0][0], fp[x+threshold][0][-1])]
+        else:
+            hash_dict[candidate_val].append((fp[x][0][0], fp[x+threshold][0][-1]))
+    return hash_dict
+
+def fast_matching(fp1, fp2, threshold):
+    # assemble hash dict
+    ngram_hash_dict_1 = _assemble_hash_dict(fp1, threshold)
+    ngram_hash_dict_2 = _assemble_hash_dict(fp2, threshold)
+
+    results_list = []
+    burnoff = 0
+    for hash_key, location_list in ngram_hash_dict_1.items():
+        # if that 5-gram appears in the other text
+        if hash_key in ngram_hash_dict_2:
+            for item in location_list:
+                for match in ngram_hash_dict_2[hash_key]:
+                    results_list.append((
+                        item[0] , item[1], match[0],match[1]))
+
+    return results_list
 
 def do_matching(fp1, fp2, fp1_hashes, fp2_hashes, threshold):
     match_results = []
@@ -59,21 +93,22 @@ def remove_unmatched_hash_values(fp1, fp2):
 
 
 def compare_fingerprints(fp1, fp2, threshold = 5, optimize=False, CYTHON=False):
-    if optimize:
-        fp1, fp2 = remove_unmatched_hash_values(fp1, fp2)
+    #if optimize:
+    #    fp1, fp2 = remove_unmatched_hash_values(fp1, fp2)
     
-    fp1_hashes = [f[2] for f in fp1]
-    fp2_hashes = [f[2] for f in fp2]
+    #fp1_hashes = [f[2] for f in fp1]
+    #fp2_hashes = [f[2] for f in fp2]
 
-    if CYTHON:
-        try:
-            import pyximport; pyximport.install()
-            from cython_fingerprints import cython_match
-        except ImportError:
-            sys.exit('Cython does not appear to be properly configured on your system. Try comparing fingerprints using CYTHON=False')        
+    return fast_matching(fp1, fp2, threshold)
+    #if CYTHON:
+    #    try:
+    #        import pyximport; pyximport.install()
+    #        from cython_fingerprints import cython_match
+    #    except ImportError:
+    #        sys.exit('Cython does not appear to be properly configured on your system. Try comparing fingerprints using CYTHON=False')        
+    #
+    #    match_results = cython_match(fp1, fp2, fp1_hashes, fp2_hashes, threshold)
+    #else:
+    #    match_results = do_matching(fp1, fp2, fp1_hashes, fp2_hashes, threshold)
 
-        match_results = cython_match(fp1, fp2, fp1_hashes, fp2_hashes, threshold)
-    else:
-        match_results = do_matching(fp1, fp2, fp1_hashes, fp2_hashes, threshold)
-
-    return match_results
+    #return match_results
