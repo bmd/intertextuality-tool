@@ -3,14 +3,22 @@ import sys
 import hashlib
 from time import time
 from collections import OrderedDict
+import pyprind
 
 class FingerprintMatcher:
-    def __init__(self, fingerprint1, fingerprint2, threshold=5):
+    """
+    Acknowledgements
+    ----------------
+    With thanks to David Harvey for his suggestions for improving
+    the matching algorithm.
+    """
+    def __init__(self, fingerprint1, fingerprint2, threshold=5, progress=True):
         if len(fingerprint1) == 0 or len(fingerprint2) == 0:
             sys.exit('FAILED: Attempted to recieve 0-length fingerprint.')
         self.fp1 = fingerprint1
         self.fp2 = fingerprint2
         self.threshold = threshold
+        self.progress = progress
 
     def __repr__(self):
         return "\n-- FINGERPRINT MATCHER -- \
@@ -44,19 +52,32 @@ class FingerprintMatcher:
         return composite_hashes
 
     def match(self):
-        start_time = time()
+        """
+        Return a list of matches of length 'threshold' between text fingerprints 
+        fp1 and fp2, identified by their start and end position in the two 
+        original comparison texts.
+        """
+        print 'Threshold is {}'.format(self.threshold)
         ngram_hash_dict_1 = self._assemble_hash_dict(self.fp1)
         ngram_hash_dict_2 = self._assemble_hash_dict(self.fp2)
 
         results_list = []
+        start_time = time()
+        if self.progress:
+            import pyprind
+            prbar = pyprind.ProgBar(len(ngram_hash_dict_1), stream=sys.stdout, track_time=False)
+
         for hash_key, location_list in ngram_hash_dict_1.items():
-            # if that 5-gram appears in the other text
             if hash_key in ngram_hash_dict_2:
+                # a little bit faster using a list comp here
                 results_list += [
                     (item[0], item[1], match[0], match[1]) 
                         for match in ngram_hash_dict_2[hash_key] 
                             for item in location_list                   
                     ]
+            if self.progress:
+                prbar.update()
+
 
         print 'Total matching time: {:.3f}s'.format(time()- start_time)
         return results_list
