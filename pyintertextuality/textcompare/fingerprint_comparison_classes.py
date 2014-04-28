@@ -65,11 +65,14 @@ class FingerprintMatcher:
         start_time = time()
         if self.progress:
             import pyprind
-            prbar = pyprind.ProgBar(len(ngram_hash_dict_1), stream=sys.stdout, track_time=False)
+            prbar = pyprind.ProgBar(
+                                len(ngram_hash_dict_1), 
+                                stream=sys.stdout, 
+                                track_time=False
+                              )
 
         for hash_key, location_list in ngram_hash_dict_1.items():
             if hash_key in ngram_hash_dict_2:
-                # a little bit faster using a list comp here
                 results_list += [
                     (item[0], item[1], match[0], match[1]) 
                         for match in ngram_hash_dict_2[hash_key] 
@@ -78,6 +81,4 @@ class FingerprintMatcher:
             if self.progress:
                 prbar.update()
 
-
-        #print 'Total matching time: {:.3f}s'.format(time()- start_time)
         return results_list

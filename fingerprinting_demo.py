@@ -10,16 +10,16 @@ import pyintertextuality as itx
 
 
 def compare_texts(speech1, speech2, winnow1, winnow2, cmptext, threshold=10, optimize=True, CYTHON=True):
-    #compare_result = itx.compare_fingerprints(winnow1, winnow2, threshold, optimize=True, CYTHON=True)
 
     F = itx.FingerprintMatcher(winnow1, winnow2, threshold, progress=False)
     compare_result = F.match()
-    if len(compare_result) > 0:
+
+    if len(compare_result) > 1:
         print '\n--------------------'
         print 'RESULTS: {}'.format(cmptext.upper())
         print '--------------------'
-        #for idx, (t1st, t1end, t2st, t2end) in enumerate(itx.remove_duplicate_matches(speech1, speech2, compare_result)):
-        for idx, (t1st, t1end, t2st, t2end) in enumerate(compare_result):
+        for idx, (t1st, t1end, t2st, t2end) in enumerate(itx.remove_duplicate_matches(speech1, speech2, compare_result)):
+        #for idx, (t1st, t1end, t2st, t2end) in enumerate(compare_result):
             print '({}) {}[{}]{}\n    {}[{}]{}\n'.format(idx+1,
                                                speech1[t1st-50:t1st], 
                                                speech1[t1st:t1end+1], 
