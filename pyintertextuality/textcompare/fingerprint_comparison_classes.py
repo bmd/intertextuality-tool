@@ -3,7 +3,6 @@ import sys
 import hashlib
 from time import time
 from collections import OrderedDict
-import pyprind
 
 class FingerprintMatcher:
     """
