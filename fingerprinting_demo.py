@@ -20,17 +20,16 @@ def seek_vulgate_chvs(start, end, full_text):
     return (seek_back-5, seek_forward-3)
 
 def compare_texts(speech1, speech2, winnow1, winnow2, cmptext, threshold=10, optimize=True, CYTHON=True):
-
     F = itx.FingerprintMatcher(winnow1, winnow2, threshold, progress=False)
     compare_result = F.match()
 
     if len(compare_result) >= 1:
-        #print '\n--------------------'
-        #print 'RESULTS: {}'.format(cmptext.upper())
-        #print '--------------------'
+        print '\n--------------------'
+        print 'RESULTS: {}'.format(cmptext.upper())
+        print '--------------------'
         for idx, (t1st, t1end, t2st, t2end) in enumerate(itx.remove_duplicate_matches(speech1, speech2, compare_result, str_threshold=90)):
             print '({}) {}[{}]{}\n    {}[{}]{}\n'.format(idx+1,
-                                               speech1[t1st-50:t1st], 
+                                              speech1[t1st-50:t1st], 
                                                speech1[t1st:t1end+1], 
                                                speech1[t1end+1:t1end+51],
                                                speech2[t2st-50:t2st],
@@ -51,7 +50,7 @@ if __name__ == '__main__':
     print '-----------------------------'
     print 'FINGERPRINTING ALGORITHM DEMO'
     print '-----------------------------'
-    K, W, = 7, 4
+    K, W = 7, 4
     print 'Importing Text 1: "S. Praeiecti"...'
     speech1 = itx.read_source_file(os.path.join('Vitae', 'S. Praeiecti Text.txt'))
     print 'Winnowing text 1...'
