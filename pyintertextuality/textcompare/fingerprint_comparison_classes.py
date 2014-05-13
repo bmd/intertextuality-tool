@@ -2,6 +2,7 @@ from __future__ import division
 import sys
 import hashlib
 from time import time
+import math as m
 from collections import OrderedDict
 
 class FingerprintMatcher:
@@ -81,3 +82,30 @@ class FingerprintMatcher:
                 prbar.update()
 
         return results_list
+
+    def _within(self, n, index_1, index_2):
+        if m.fabs(index_1 - index_2) <= n:
+            return True
+        else:
+            return False
+
+    def naive_reduce_result_complexity(self, results, diff=5):
+        summary_counts = []
+        for result in results:
+            s = {
+            'st': result[0],
+            'en': result[1],
+            'match': 1
+            }
+            if len(summary_counts) == 0:
+                summary_counts.append(s)
+            else:
+                for summ in summary_counts:
+                    if self._within(diff, summ['st'], s['st']) and self._within(diff, summ['en'], s['en']):
+                        summ['match'] += 1
+                        break
+                else: 
+                    summary_counts.append(s)
+        return summary_counts
+
+

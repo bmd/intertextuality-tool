@@ -22,7 +22,17 @@ def seek_vulgate_chvs(start, end, full_text):
 def compare_texts(speech1, speech2, winnow1, winnow2, cmptext, threshold=10, optimize=True, CYTHON=True):
     F = itx.FingerprintMatcher(winnow1, winnow2, threshold, progress=False)
     compare_result = F.match()
+    stripped_results = F.naive_reduce_result_complexity(itx.remove_duplicate_matches(speech1, speech2, compare_result, str_threshold=90), diff=10)
 
+    if len(stripped_results) > 0:
+        print '\n--------------------'
+        print 'RESULTS: {}'.format(cmptext.upper())
+        print '--------------------'
+
+        for result in stripped_results:
+            print 'Found {} match(es) for:'.format(result['match'])
+            print '{}[{}]{}\n'.format(speech1[result['st']-50:result['st']], speech1[result['st']:result['en']+1], speech1[result['en']:result['en']+50])
+    """
     if len(compare_result) >= 1:
         print '\n--------------------'
         print 'RESULTS: {}'.format(cmptext.upper())
@@ -44,7 +54,7 @@ def compare_texts(speech1, speech2, winnow1, winnow2, cmptext, threshold=10, opt
             #                                   speech2[pst:t2st],
             #                                   speech2[t2st:t2end+1],
             #                                   speech2[t2end+1:pend]
-            #                                   )
+            #                                   )"""
 
 if __name__ == '__main__':
     print '-----------------------------'
