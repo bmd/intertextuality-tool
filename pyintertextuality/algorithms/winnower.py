@@ -8,7 +8,6 @@ def sanitize(text):
     and c is the character itself.
     """
     tuples = zip(xrange(len(text)), text)
-    #exp = re.compile(r'[^a-zA-Z0-9]')
     exp = re.compile(r'[^a-zA-Z]')
     return [(t[0], t[1].lower()) for t in tuples if exp.match(t[1]) == None]
 
@@ -39,7 +38,6 @@ def compute_kgram_hashes(sanitized, kgram=5):
     final = []
     for kg in kgram_gen(sanitized, k=kgram):
         unpacked = zip(*kg)
-        #print ''.join(unpacked[1])
         final.append([unpacked[0], unpacked[1], hash(''.join(unpacked[1]))])
 
     return final
@@ -65,7 +63,7 @@ def winnow_kgrams(hashed_kgrams, window=4):
             if fingerprints[-1] != min_hash:
                 fingerprints.append(min_hash)
         except IndexError:
-            fingerprints.append(min_hash)
+                fingerprints.append(min_hash)
 
     return fingerprints
 
